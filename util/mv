@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my %sites =
+  (vday2015 => "vday2015",
+   vday2014 => "vday2014",
+   xmas2019 => "xmas2019",
+   xmas2017 => "xmas2017",
+   xmas2015 => "xmas2015",
+   xmas2014 => "xmas2014",
+   xmas2013 => "xmas2013",
+   xmas2012 => "xmas2012");
+
+for my $short (keys %sites) {
+  my $long = $sites{$short};
+  #system 'mv', "$long.html", "$short.html";
+  #system 'mv', "${long}_files", "${short}_files";
+  system qw/find . -type f -exec perl -i -p -e/, "s/$long/$short/g", qw/{} ;/;
+}
+   
