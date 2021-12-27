@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Usage: soften [-radiu pixels] [-geometry scale%/geom] filename.jpg
+
+radius=8
+geom=100%
+args=()
+
+usage() {
+  echo "Usage: soften [-radius pixels] [-geometry scale%/geom] filename.jpg" >&2
+  exit $1
+}
+
+while [ "$#" -gt 0 ]; do
+  arg=$1
+  shift
+  case "$arg" in
+    (-radius)
+      radius=$1
+      shift
+      ;;
+    (-geometry)
+      geom=$1
+      shift
+      ;;
+    (--)
+      args=("${args[@]}" "$@")
+      break
+      ;;
+    (-*)
+      echo "Bad argument: $arg" >&2
+      usage 1
+      ;;
+    (*)
+      args=("${args[@]}" "$arg")
+      ;;
+  esac
+done
+
+if [ "${#args[@]}" -ne 1 ]; then
+  echo "Missing filename" >&2
+  usage 1
+fi
+
+filename="${args[0]}"
+if [ ! -f "$filename" ]; then
+  echo "Input file not found: $filename" >&2
+  usage 1
+fi
+
+
+# Note: always output a png (for alpha)
+out=${filename%.*}-soft.png
+
+# convert "$filename" -geometry "$geom" -bordercolor black -fill white \
+#         \( -clone 0 -colorize 100 -shave "$radius"x"$radius" \
+#            -border "$radius"x"$radius" -blur 0x"$radius" \) \
+#         -compose copyopacity -composite "$out"
+
+convert "$filename" -geometry "$geom" -alpha set -virtual-pixel transparent \
+        -channel A -blur 0x"$radius" -level 50%,100% +channel "$out"
