@@ -5,9 +5,10 @@
 radius=8
 geom=100%
 args=()
+out=
 
 usage() {
-  echo "Usage: soften [-radius pixels] [-geometry scale%/geom] filename.jpg" >&2
+  echo "Usage: soften [-radius pixels] [-geometry scale%/geom] [-out file.png] filename.jpg" >&2
   exit $1
 }
 
@@ -21,6 +22,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     (-geometry)
       geom=$1
+      shift
+      ;;
+    (-out)
+      out=$1
       shift
       ;;
     (--)
@@ -50,7 +55,9 @@ fi
 
 
 # Note: always output a png (for alpha)
-out=${filename%.*}-soft.png
+if [ -z "$out" ]; then
+  out=${filename%.*}-soft.png
+fi
 
 # convert "$filename" -geometry "$geom" -bordercolor black -fill white \
 #         \( -clone 0 -colorize 100 -shave "$radius"x"$radius" \

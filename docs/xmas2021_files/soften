@@ -1,0 +1,17 @@
+#!/bin/bash
+
+R=$1
+DIR=$2
+
+soften() {
+  a=$1
+  o=${a/.jpg/.png}
+  shift
+  ../../util/soften -radius "$R" "$@" -out "$o" "$DIR/$a"
+}
+
+soften house.png
+soften kids.png
+soften trips.png
+soften wolftrap.jpg -geometry x180
+soften fall.jpg -geometry 600x400
