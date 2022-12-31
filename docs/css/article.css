@@ -53,5 +53,8 @@ figcaption {
 figure.float-right {
   float: right;
   margin: 5px 0px 5px 10px;
-
+}
+figure.float-left {
+  float: left;
+  margin: 5px 10px 5px 0px;
 }

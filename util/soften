@@ -1,8 +1,12 @@
 #!/bin/bash
 
-# Usage: soften [-radiu pixels] [-geometry scale%/geom] filename.jpg
+# Usage: soften [-radius pixels] [-geometry scale%/geom] filename.jpg
 
-radius=8
+# NOTE: We usually use 600px width for the full column, 600x400 for a
+# full-size image, 169-253px height for inset/float images (portrait
+# may be taller), or 225px height for full-width image bars.
+
+radius=5 # was 8?
 geom=100%
 args=()
 out=
