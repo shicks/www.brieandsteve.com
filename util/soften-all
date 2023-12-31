@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Run from 'xxx_files' directory.
+# Expects an 'originals' subdirectory within that
+# Add a *.geom file with a geometry spec
+#  - default is x253 for height 253
+#  - x169 makes a smaller image, good for portrait
+#  - 600x is full-width
+
+set -e
+cd originals/
+for a in *.jpg; do
+  g=${a%.jpg}
+  geom=$(egrep ^${g}= geometry | tail -1)
+  geom=${geom#*=}
+  if [ "$geom" = skip ]; then continue; fi
+  if [ -z "$geom" ]; then
+    wh=$(identify -format '%wx%h' $a)
+    w=${wh%x*}
+    h=${wh#*x}
+    if [ "$w" -gt "$h" ]; then
+      geom=253x
+    else
+      geom=x253
+    fi
+  fi
+  
+  cmd=(../../../util/soften \
+    -geometry "$geom" \
+    -out ../${a%.jpg}.png \
+    $a)
+  echo "${cmd[@]}"
+  "${cmd[@]}"
+done
